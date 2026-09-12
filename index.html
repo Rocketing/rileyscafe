@@ -1,17 +1,1601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Riley</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
 <style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    background: #000;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow: hidden;
+}
+
+/* =========================
+   STARS
+========================= */
+
+#stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: white;
+    opacity: .25;
+    animation: twinkle linear infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% {
+        opacity: .08;
+    }
+
+    50% {
+        opacity: .8;
+    }
+}
+
+/* =========================
+   ENTRY SCREEN
+========================= */
+
+body.locked .app {
+    filter: blur(25px);
+    transform: scale(1.02);
+}
+
+.app {
+    transition:
+        filter 1.2s ease,
+        transform 1.2s ease;
+}
+
+#enter-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #000;
+    cursor: pointer;
+
+    transition:
+        opacity 1s ease,
+        visibility 1s ease;
+}
+
+#enter-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.enter-text {
+    color: #777;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* =========================
+   APP
+========================= */
+
+.app {
+    position: relative;
+    z-index: 1;
+
+    width: 100%;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 35px;
+}
+
+/* =========================
+   MAIN RECTANGLE
+========================= */
+
+.dashboard {
+    width: min(1100px, 100%);
+    height: min(720px, calc(100vh - 70px));
+
+    display: grid;
+    grid-template-columns: 270px 1fr;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(20,20,20,.96),
+            rgba(7,7,7,.96)
+        );
+
+    border: 1px solid rgba(255,255,255,.1);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 40px 100px rgba(0,0,0,.8),
+        0 0 100px rgba(255,255,255,.025);
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+    position: relative;
+
+    padding: 30px;
+
+    display: flex;
+    flex-direction: column;
+
+    border-right: 1px solid rgba(255,255,255,.08);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.025),
+            rgba(255,255,255,.005)
+        );
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding-top: 15px;
+}
+
+.pfp {
+    width: 105px;
+    height: 105px;
+
+    object-fit: cover;
+    border-radius: 50%;
+
+    border: 1px solid rgba(255,255,255,.12);
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.7);
+}
+
+.name {
+    margin-top: 18px;
+
+    font-family: "Pacifico", cursive;
+    font-size: 28px;
+    font-weight: 400;
+
+    letter-spacing: 0;
+
+    color: #fff;
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+.navigation {
+    margin-top: 50px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+.nav-button {
+    width: 100%;
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 0 14px;
+
+    border: 1px solid transparent;
+    border-radius: 9px;
+
+    background: transparent;
+
+    color: #555;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.nav-button i {
+    width: 18px;
+    text-align: center;
+}
+
+.nav-button span {
+    font-size: 12px;
+}
+
+.nav-button:hover {
+    color: #aaa;
+    background: rgba(255,255,255,.035);
+}
+
+.nav-button.active {
+    color: #fff;
+
+    background: rgba(255,255,255,.06);
+
+    border-color:
+        rgba(255,255,255,.08);
+}
+
+/* =========================
+   SIDEBAR BOTTOM
+========================= */
+
+.sidebar-bottom {
+    margin-top: auto;
+
+    color: #333;
+
+    font-size: 10px;
+
+    text-align: center;
+
+    letter-spacing: 1px;
+}
+
+/* =========================
+   CONTENT
+========================= */
+
+.content {
+    min-width: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    scroll-behavior: smooth;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.content::-webkit-scrollbar {
+    display: none;
+}
+
+/* =========================
+   SECTIONS
+========================= */
+
+.section {
+    min-height: 100%;
+
+    padding: 55px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.section + .section {
+    border-top:
+        1px solid rgba(255,255,255,.07);
+}
+
+.section-header {
+    margin-bottom: 28px;
+}
+
+.section-label {
+    color: #555;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.section-title {
+    margin-top: 8px;
+
+    font-size: 25px;
+    font-weight: 700;
+
+    letter-spacing: -.7px;
+}
+
+/* =========================
+   HOME
+========================= */
+
+.home-grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.35fr)
+        minmax(220px, .65fr);
+
+    gap: 15px;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.card {
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius: 12px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    transition:
+        background .2s,
+        border-color .2s,
+        transform .2s;
+}
+
+.card:hover {
+    background:
+        rgba(255,255,255,.04);
+
+    border-color:
+        rgba(255,255,255,.12);
+}
+
+/* =========================
+   MUSIC
+========================= */
+
+.music-card {
+    padding: 18px;
+
+    min-height: 170px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-label {
+    color: #555;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+    letter-spacing: 1.7px;
+}
+
+.music-content {
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+}
+
+.album {
+    width: 72px;
+    height: 72px;
+
+    flex-shrink: 0;
+
+    object-fit: cover;
+
+    border-radius: 9px;
+
+    background: #111;
+}
+
+.song-info {
+    min-width: 0;
+}
+
+.song-name {
+    font-size: 15px;
+    font-weight: 600;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.artist {
+    margin-top: 6px;
+
+    color: #777;
+
+    font-size: 12px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.playing-status {
+    margin-top: 7px;
+
+    color: #444;
+
+    font-size: 10px;
+}
+
+/* =========================
+   MINI ABOUT
+========================= */
+
+.mini-about {
+    padding: 20px;
+
+    min-height: 170px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.mini-about-text {
+    color: #888;
+
+    font-size: 12px;
+
+    line-height: 1.7;
+}
+
+.mini-about-text strong {
+    color: #fff;
+}
+
+/* =========================
+   FRIENDS
+========================= */
+
+.friends-card {
+    margin-top: 15px;
+
+    padding: 20px;
+}
+
+.friends {
+    margin-top: 18px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 25px;
+
+    flex-wrap: wrap;
+}
+
+.friend {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+.friend img {
+    width: 58px;
+    height: 58px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    transition: .2s;
+}
+
+.friend img:hover {
+    transform: translateY(-4px);
+
+    border-color:
+        rgba(255,255,255,.2);
+}
+
+.friend a {
+    line-height: 0;
+}
+
+.friend-name {
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.friend-name.cleo {
+    color: #ff9fcf;
+}
+
+.friend-name.tara {
+    background:
+        linear-gradient(
+            90deg,
+            #d52d00,
+            #ef7627,
+            #ff9a56,
+            #d52d00
+        );
+
+    background-size: 300% auto;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+
+    animation:
+        gradient 10s linear infinite;
+}
+
+.friend-name.aria,
+.friend-name.celena {
+    background:
+        linear-gradient(
+            90deg,
+            #5bcefa,
+            #f5a9b8,
+            #ffffff,
+            #f5a9b8,
+            #5bcefa
+        );
+
+    background-size: 300% auto;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+
+    animation:
+        gradient 10s linear infinite;
+}
+
+.friend-name.charlie {
+    background:
+        linear-gradient(
+            90deg,
+            #fcf434,
+            #ffffff,
+            #9c59d1,
+            #2c2c2c,
+            #fcf434
+        );
+
+    background-size: 300% auto;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+
+    animation:
+        gradient 10s linear infinite;
+}
+
+/* =========================
+   SOCIAL
+========================= */
+
+.social-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0,1fr));
+
+    gap: 12px;
+}
+
+.social {
+    min-height: 90px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 20px;
+
+    text-decoration: none;
+
+    color: white;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius: 11px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    transition: .2s;
+}
+
+.social:hover {
+    transform: translateY(-3px);
+
+    background:
+        rgba(255,255,255,.05);
+
+    border-color:
+        rgba(255,255,255,.15);
+}
+
+.social-icon {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background:
+        rgba(255,255,255,.06);
+
+    color: #aaa;
+
+    font-size: 15px;
+}
+
+.social-info {
+    min-width: 0;
+}
+
+.social-name {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.social-handle {
+    margin-top: 4px;
+
+    color: #555;
+
+    font-size: 10px;
+}
+
+/* =========================
+   ABOUT
+========================= */
+
+.about-box {
+    max-width: 650px;
+
+    padding: 25px;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius: 12px;
+
+    background:
+        rgba(255,255,255,.025);
+}
+
+.about-text {
+    color: #888;
+
+    font-size: 14px;
+
+    line-height: 1.9;
+}
+
+.about-text strong {
+    color: white;
+}
+
+/* =========================
+   AUDIO
+========================= */
+
+.audio-button {
+    position: fixed;
+
+    right: 25px;
+    bottom: 25px;
+
+    width: 43px;
+    height: 43px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(255,255,255,.12);
+
+    background:
+        rgba(0,0,0,.8);
+
+    color: white;
+
+    cursor: pointer;
+
+    z-index: 1000;
+
+    transition: .2s;
+}
+
+.audio-button:hover {
+    transform: scale(1.08);
+
+    border-color:
+        rgba(255,255,255,.3);
+}
+
+/* =========================
+   GRADIENT ANIMATION
+========================= */
+
+@keyframes gradient {
+
+    0% {
+        background-position: 0% center;
+    }
+
+    100% {
+        background-position: 300% center;
+    }
+
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 800px) {
+
     body {
-        background-color: #121212;
-        color: white;
+        overflow: hidden;
     }
 
-    a, a:visited, a:hover, a:active {
-        color: white;
-        text-decoration: underline;
+    .app {
+        padding: 15px;
     }
+
+    .dashboard {
+        height: calc(100vh - 30px);
+
+        grid-template-columns: 1fr;
+
+        border-radius: 15px;
+    }
+
+    .sidebar {
+        height: 85px;
+
+        padding: 12px 18px;
+
+        flex-direction: row;
+        align-items: center;
+
+        border-right: none;
+
+        border-bottom:
+            1px solid rgba(255,255,255,.08);
+    }
+
+    .profile {
+        padding: 0;
+
+        flex-direction: row;
+
+        gap: 10px;
+    }
+
+    .pfp {
+        width: 55px;
+        height: 55px;
+    }
+
+    .name {
+        margin-top: 0;
+        font-size: 20px;
+    }
+
+    .navigation {
+        margin:
+            0 0 0 auto;
+
+        flex-direction: row;
+    }
+
+    .nav-button {
+        width: 40px;
+        height: 40px;
+
+        justify-content: center;
+
+        padding: 0;
+    }
+
+    .nav-button span {
+        display: none;
+    }
+
+    .sidebar-bottom {
+        display: none;
+    }
+
+    .section {
+        padding: 35px 25px;
+
+        min-height: auto;
+    }
+
+    .home-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .social-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .friends {
+        gap: 18px;
+    }
+
+    .friend img {
+        width: 50px;
+        height: 50px;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    .sidebar {
+        height: 80px;
+    }
+
+    .pfp {
+        width: 48px;
+        height: 48px;
+    }
+
+    .name {
+        font-size: 18px;
+    }
+
+    .navigation {
+        gap: 2px;
+    }
+
+    .nav-button {
+        width: 35px;
+        height: 35px;
+    }
+
+    .section-title {
+        font-size: 22px;
+    }
+
+}
+
 </style>
+</head>
 
-<a href="https://github.com/rocketing">github</a>
-<a href="https://discord.com/users/1142433636822548601">discord</a>
-<a href="https://namemc.com/9om">namemc</a><br>
-<br>
-hi im riley
+<body class="locked">
+
+<div id="enter-screen">
+    <div class="enter-text">
+        click anywhere
+    </div>
+</div>
+
+<div id="stars"></div>
+
+<audio id="audio" loop>
+    <source src="media/audio.mp3" type="audio/mpeg">
+</audio>
+
+<div class="app">
+
+    <div class="dashboard">
+
+        <aside class="sidebar">
+
+            <div class="profile">
+
+                <img
+                    src="media/pfp.png"
+                    class="pfp"
+                    alt="Riley"
+                >
+
+                <div class="name">
+                    Riley
+                </div>
+
+            </div>
+
+            <nav class="navigation">
+
+                <button
+                    class="nav-button active"
+                    onclick="scrollToPage('home')"
+                >
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home</span>
+                </button>
+
+                <button
+                    class="nav-button"
+                    onclick="scrollToPage('social')"
+                >
+                    <i class="fa-solid fa-link"></i>
+                    <span>Social</span>
+                </button>
+
+                <button
+                    class="nav-button"
+                    onclick="scrollToPage('about')"
+                >
+                    <i class="fa-solid fa-user"></i>
+                    <span>About</span>
+                </button>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+                RILEY.CAFE
+            </div>
+
+        </aside>
+
+        <main class="content">
+
+            <!-- =========================
+                 HOME
+            ========================= -->
+
+            <section id="home" class="section">
+
+                <div class="section-header">
+
+                    <div class="section-label">
+                        Dashboard
+                    </div>
+
+                    <div class="section-title">
+                        Welcome.
+                    </div>
+
+                </div>
+
+                <div class="home-grid">
+
+                    <div class="card music-card">
+
+                        <div class="card-label">
+                            Currently playing
+                        </div>
+
+                        <div class="music-content">
+
+                            <img
+                                id="album"
+                                class="album"
+                                src=""
+                                alt="Album cover"
+                            >
+
+                            <div class="song-info">
+
+                                <div
+                                    id="song"
+                                    class="song-name"
+                                >
+                                    Loading...
+                                </div>
+
+                                <div
+                                    id="artist"
+                                    class="artist"
+                                >
+                                    Loading...
+                                </div>
+
+                                <div
+                                    id="playing-status"
+                                    class="playing-status"
+                                >
+                                    Loading
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card mini-about">
+
+                        <div class="card-label">
+                            About me
+                        </div>
+
+                        <div class="mini-about-text">
+
+                            hey im
+                            <strong>riley</strong>
+
+                            <br><br>
+
+                            i like music, my girlfriend,
+                            cats, girls, cleo & cats
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="card friends-card">
+
+                    <div class="card-label">
+                        Friends
+                    </div>
+
+                    <div class="friends">
+
+                        <div class="friend">
+
+                            <img
+                                src="friends/cleo.png"
+                                alt="Cleo"
+                            >
+
+                            <div class="friend-name cleo">
+                                Cleo ♥
+                            </div>
+
+                        </div>
+
+                        <div class="friend">
+
+                            <a
+                                href="https://kittyaria.cat"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+
+                                <img
+                                    src="friends/aria.png"
+                                    alt="Aria"
+                                >
+
+                            </a>
+
+                            <div class="friend-name aria">
+                                Aria
+                            </div>
+
+                        </div>
+
+                        <div class="friend">
+
+                            <img
+                                src="friends/tara.png"
+                                alt="Tara"
+                            >
+
+                            <div class="friend-name tara">
+                                Tara
+                            </div>
+
+                        </div>
+
+                        <div class="friend">
+
+                            <img
+                                src="friends/charlie.png"
+                                alt="Charlie"
+                            >
+
+                            <div class="friend-name charlie">
+                                Charlie
+                            </div>
+
+                        </div>
+
+                        <div class="friend">
+
+                            <img
+                                src="friends/celena.png"
+                                alt="Celena"
+                            >
+
+                            <div class="friend-name celena">
+                                Celena
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- =========================
+                 SOCIAL
+            ========================= -->
+
+            <section id="social" class="section">
+
+                <div class="section-header">
+
+                    <div class="section-label">
+                        Connections
+                    </div>
+
+                    <div class="section-title">
+                        Find me online.
+                    </div>
+
+                </div>
+
+                <div class="social-grid">
+
+                    <a
+                        class="social"
+                        href="https://github.com/rocketing"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+
+                        <div class="social-icon">
+                            <i class="fa-brands fa-github"></i>
+                        </div>
+
+                        <div class="social-info">
+
+                            <div class="social-name">
+                                GitHub
+                            </div>
+
+                            <div class="social-handle">
+                                @rocketing
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                    <a
+                        class="social"
+                        href="https://discord.com/users/1142433636822548601"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+
+                        <div class="social-icon">
+                            <i class="fa-brands fa-discord"></i>
+                        </div>
+
+                        <div class="social-info">
+
+                            <div class="social-name">
+                                Discord
+                            </div>
+
+                            <div class="social-handle">
+                                @Riley
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                    <a
+                        class="social"
+                        href="https://open.spotify.com/user/31kcl3foiantv5wvv4cryp2k5pbi?si=5bf632806278499"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+
+                        <div class="social-icon">
+                            <i class="fa-brands fa-spotify"></i>
+                        </div>
+
+                        <div class="social-info">
+
+                            <div class="social-name">
+                                Spotify
+                            </div>
+
+                            <div class="social-handle">
+                                Music
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                    <a
+                        class="social"
+                        href="https://tiktok.com/@2rileeey"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+
+                        <div class="social-icon">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </div>
+
+                        <div class="social-info">
+
+                            <div class="social-name">
+                                TikTok
+                            </div>
+
+                            <div class="social-handle">
+                                @2rileeey
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                </div>
+
+            </section>
+
+            <!-- =========================
+                 ABOUT
+            ========================= -->
+
+            <section id="about" class="section">
+
+                <div class="section-header">
+
+                    <div class="section-label">
+                        Information
+                    </div>
+
+                    <div class="section-title">
+                        A little about me.
+                    </div>
+
+                </div>
+
+                <div class="about-box">
+
+                    <div class="about-text">
+
+                        hey im <strong>riley</strong>
+
+                        <br><br>
+
+                        i like music, my girlfriend,
+                        cats, my girlfriend, girls,
+                        cleo (my girlfriend) & cats
+
+                        <br><br>
+
+                        this is my website that i
+                        vibe-coded at 2am on a saturday
+                        morning &lt;3
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     AUDIO BUTTON
+========================= -->
+
+<button
+    class="audio-button"
+    id="audio-button"
+    title="Toggle music"
+>
+    <i class="fa-solid fa-volume-high"></i>
+</button>
+
+<script>
+
+/* =========================
+   ENTRY + AUDIO
+========================= */
+
+const enterScreen =
+    document.getElementById("enter-screen");
+
+const audio =
+    document.getElementById("audio");
+
+const audioButton =
+    document.getElementById("audio-button");
+
+enterScreen.addEventListener("click", () => {
+
+    document.body.classList.remove("locked");
+
+    audio.play().catch(() => {});
+
+    audioButton.innerHTML =
+        '<i class="fa-solid fa-volume-high"></i>';
+
+    enterScreen.classList.add("hidden");
+
+});
+
+audioButton.addEventListener("click", () => {
+
+    if (audio.paused) {
+
+        audio.play().catch(() => {});
+
+        audioButton.innerHTML =
+            '<i class="fa-solid fa-volume-high"></i>';
+
+    } else {
+
+        audio.pause();
+
+        audioButton.innerHTML =
+            '<i class="fa-solid fa-volume-xmark"></i>';
+
+    }
+
+});
+
+/* =========================
+   NAVIGATION
+========================= */
+
+const content =
+    document.querySelector(".content");
+
+const sections =
+    document.querySelectorAll(".section");
+
+const navButtons =
+    document.querySelectorAll(".nav-button");
+
+function scrollToPage(id) {
+
+    document.getElementById(id).scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+}
+
+/* =========================
+   ACTIVE NAV
+========================= */
+
+const observer =
+    new IntersectionObserver(
+        entries => {
+
+            entries.forEach(entry => {
+
+                if (!entry.isIntersecting)
+                    return;
+
+                const index =
+                    [...sections].indexOf(
+                        entry.target
+                    );
+
+                navButtons.forEach(button => {
+                    button.classList.remove("active");
+                });
+
+                if (index >= 0) {
+
+                    navButtons[index]
+                        .classList.add("active");
+
+                }
+
+            });
+
+        },
+        {
+            root: content,
+            threshold: .55
+        }
+    );
+
+sections.forEach(section => {
+    observer.observe(section);
+});
+
+/* =========================
+   STARS
+========================= */
+
+const stars =
+    document.getElementById("stars");
+
+for (let i = 0; i < 180; i++) {
+
+    const star =
+        document.createElement("div");
+
+    star.className = "star";
+
+    star.style.left =
+        Math.random() * 100 + "%";
+
+    star.style.top =
+        Math.random() * 100 + "%";
+
+    star.style.animationDuration =
+        (2 + Math.random() * 5) + "s";
+
+    star.style.animationDelay =
+        Math.random() * 5 + "s";
+
+    star.style.transform =
+        `scale(${.5 + Math.random()})`;
+
+    stars.appendChild(star);
+
+}
+
+/* =========================
+   LAST.FM
+========================= */
+
+const lastfmUsername =
+    "meowriley";
+
+const lastfmApiKey =
+    "5339789f2bea8545c011616dfd5b31c5";
+
+async function updateLastFM() {
+
+    const url =
+        `https://ws.audioscrobbler.com/2.0/` +
+        `?method=user.getrecenttracks` +
+        `&user=${encodeURIComponent(lastfmUsername)}` +
+        `&api_key=${lastfmApiKey}` +
+        `&format=json` +
+        `&limit=1`;
+
+    try {
+
+        const response =
+            await fetch(url);
+
+        const data =
+            await response.json();
+
+        const track =
+            data.recenttracks?.track?.[0];
+
+        if (!track)
+            return;
+
+        document.getElementById("song")
+            .textContent =
+            track.name || "Unknown";
+
+        document.getElementById("artist")
+            .textContent =
+            track.artist?.["#text"] ||
+            "Unknown";
+
+        const image =
+            track.image?.find(
+                img =>
+                    img.size === "extralarge"
+            )?.["#text"]
+            ||
+            track.image?.[
+                track.image.length - 1
+            ]?.["#text"];
+
+        if (image) {
+
+            document.getElementById("album")
+                .src = image;
+
+        }
+
+        const isPlaying =
+            track["@attr"]?.nowplaying === "true";
+
+        document.getElementById(
+            "playing-status"
+        ).textContent =
+            isPlaying
+                ? "Listening now"
+                : "Last played";
+
+    } catch (error) {
+
+        console.error(
+            "Last.fm error:",
+            error
+        );
+
+    }
+
+}
+
+updateLastFM();
+
+setInterval(
+    updateLastFM,
+    30000
+);
+
+</script>
+
+</body>
+</html>
